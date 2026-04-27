@@ -63,12 +63,12 @@ function ConfirmationCenter() {
       const patch: any = { status: result, agent_id: user?.id };
       const { error: e1 } = await supabase.from("confirmation_calls").update(patch).eq("id", selected.id);
       if (e1) throw e1;
-      const { error: e2 } = await supabase.from("call_logs").insert({
+      const { error: e2 } = await supabase.from("call_logs").insert([{
         confirmation_call_id: selected.id,
         agent_id: user?.id,
-        result: result === "confirmed" ? "answered" : "refused",
+        result: (result === "confirmed" ? "answered" : "refused") as any,
         notes,
-      });
+      }]);
       if (e2) throw e2;
     },
     onSuccess: () => {
@@ -82,12 +82,12 @@ function ConfirmationCenter() {
   const logAttempt = useMutation({
     mutationFn: async (result: "no_answer" | "voicemail" | "wrong_number") => {
       if (!selected) return;
-      const { error } = await supabase.from("call_logs").insert({
+      const { error } = await supabase.from("call_logs").insert([{
         confirmation_call_id: selected.id,
         agent_id: user?.id,
         result,
         notes,
-      });
+      }]);
       if (error) throw error;
     },
     onSuccess: () => {
