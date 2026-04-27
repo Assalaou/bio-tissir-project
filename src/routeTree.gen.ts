@@ -14,6 +14,7 @@ import { Route as AdminRouteImport } from './routes/admin'
 import { Route as AccountRouteImport } from './routes/account'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AdminOrdersRouteImport } from './routes/admin.orders'
+import { Route as AdminConfirmationRouteImport } from './routes/admin.confirmation'
 
 const AuthRoute = AuthRouteImport.update({
   id: '/auth',
@@ -40,12 +41,18 @@ const AdminOrdersRoute = AdminOrdersRouteImport.update({
   path: '/orders',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminConfirmationRoute = AdminConfirmationRouteImport.update({
+  id: '/confirmation',
+  path: '/confirmation',
+  getParentRoute: () => AdminRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/account': typeof AccountRoute
   '/admin': typeof AdminRouteWithChildren
   '/auth': typeof AuthRoute
+  '/admin/confirmation': typeof AdminConfirmationRoute
   '/admin/orders': typeof AdminOrdersRoute
 }
 export interface FileRoutesByTo {
@@ -53,6 +60,7 @@ export interface FileRoutesByTo {
   '/account': typeof AccountRoute
   '/admin': typeof AdminRouteWithChildren
   '/auth': typeof AuthRoute
+  '/admin/confirmation': typeof AdminConfirmationRoute
   '/admin/orders': typeof AdminOrdersRoute
 }
 export interface FileRoutesById {
@@ -61,14 +69,34 @@ export interface FileRoutesById {
   '/account': typeof AccountRoute
   '/admin': typeof AdminRouteWithChildren
   '/auth': typeof AuthRoute
+  '/admin/confirmation': typeof AdminConfirmationRoute
   '/admin/orders': typeof AdminOrdersRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/account' | '/admin' | '/auth' | '/admin/orders'
+  fullPaths:
+    | '/'
+    | '/account'
+    | '/admin'
+    | '/auth'
+    | '/admin/confirmation'
+    | '/admin/orders'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/account' | '/admin' | '/auth' | '/admin/orders'
-  id: '__root__' | '/' | '/account' | '/admin' | '/auth' | '/admin/orders'
+  to:
+    | '/'
+    | '/account'
+    | '/admin'
+    | '/auth'
+    | '/admin/confirmation'
+    | '/admin/orders'
+  id:
+    | '__root__'
+    | '/'
+    | '/account'
+    | '/admin'
+    | '/auth'
+    | '/admin/confirmation'
+    | '/admin/orders'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -115,14 +143,23 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminOrdersRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/confirmation': {
+      id: '/admin/confirmation'
+      path: '/confirmation'
+      fullPath: '/admin/confirmation'
+      preLoaderRoute: typeof AdminConfirmationRouteImport
+      parentRoute: typeof AdminRoute
+    }
   }
 }
 
 interface AdminRouteChildren {
+  AdminConfirmationRoute: typeof AdminConfirmationRoute
   AdminOrdersRoute: typeof AdminOrdersRoute
 }
 
 const AdminRouteChildren: AdminRouteChildren = {
+  AdminConfirmationRoute: AdminConfirmationRoute,
   AdminOrdersRoute: AdminOrdersRoute,
 }
 
