@@ -29,7 +29,7 @@ function ConfirmationCenter() {
       const { data } = await supabase
         .from("confirmation_calls")
         .select("*")
-        .in("status", ["pending", "in_progress", "no_answer", "rescheduled"])
+        .in("status", ["pending", "in_progress", "no_answer", "postponed"])
         .order("priority", { ascending: false })
         .order("created_at", { ascending: true })
         .limit(50);
