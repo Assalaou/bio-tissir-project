@@ -36,11 +36,17 @@ function ProductsList() {
       const { data } = await q;
       const ids = (data ?? []).map((p) => p.id);
       const { data: tr } = ids.length ? await supabase.from("product_translations").select("product_id, locale, name").in("product_id", ids) : { data: [] };
+      const { data: imgs } = ids.length ? await supabase.from("product_images").select("product_id, url, is_primary, sort_order").in("product_id", ids) : { data: [] };
       return (data ?? []).map((p) => ({
         ...p,
         name: tr?.find((x: any) => x.product_id === p.id && x.locale === locale)?.name
           ?? tr?.find((x: any) => x.product_id === p.id && x.locale === "fr")?.name
           ?? p.slug,
+        image_url: (() => {
+          const list = (imgs ?? []).filter((x: any) => x.product_id === p.id);
+          const primary = list.find((x: any) => x.is_primary);
+          return primary?.url ?? list.sort((a: any, b: any) => a.sort_order - b.sort_order)[0]?.url ?? null;
+        })(),
       }));
     },
   });
@@ -77,6 +83,7 @@ function ProductsList() {
           </div>
           <Table>
             <TableHeader><TableRow>
+              <TableHead className="w-14"></TableHead>
               <TableHead>{t("products.sku")}</TableHead>
               <TableHead>{t("common.name")}</TableHead>
               <TableHead>{t("products.basePrice")}</TableHead>
@@ -84,10 +91,15 @@ function ProductsList() {
               <TableHead></TableHead>
             </TableRow></TableHeader>
             <TableBody>
-              {list.isLoading ? <TableRow><TableCell colSpan={5} className="text-center text-muted-foreground">{t("common.loading")}</TableCell></TableRow> :
-                list.data?.length === 0 ? <TableRow><TableCell colSpan={5} className="text-center text-muted-foreground">{t("common.empty")}</TableCell></TableRow> :
+              {list.isLoading ? <TableRow><TableCell colSpan={6} className="text-center text-muted-foreground">{t("common.loading")}</TableCell></TableRow> :
+                list.data?.length === 0 ? <TableRow><TableCell colSpan={6} className="text-center text-muted-foreground">{t("common.empty")}</TableCell></TableRow> :
                 list.data!.map((p: any) => (
                   <TableRow key={p.id}>
+                    <TableCell>
+                      <div className="h-10 w-10 overflow-hidden rounded bg-muted">
+                        {p.image_url ? <img src={p.image_url} alt={p.name} className="h-full w-full object-cover" /> : null}
+                      </div>
+                    </TableCell>
                     <TableCell className="font-mono text-xs">{p.sku}</TableCell>
                     <TableCell><Link to="/admin/products/$productId" params={{ productId: p.id }} className="font-medium text-primary hover:underline">{p.name}</Link></TableCell>
                     <TableCell className="font-mono text-xs">{Number(p.base_price).toFixed(2)}</TableCell>
