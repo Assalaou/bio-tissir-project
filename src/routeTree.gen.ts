@@ -19,6 +19,7 @@ import { Route as AdminOrdersRouteImport } from './routes/admin.orders'
 import { Route as AdminLocationsRouteImport } from './routes/admin.locations'
 import { Route as AdminInventoryRouteImport } from './routes/admin.inventory'
 import { Route as AdminDepotsRouteImport } from './routes/admin.depots'
+import { Route as AdminCustomersRouteImport } from './routes/admin.customers'
 import { Route as AdminConfirmationRouteImport } from './routes/admin.confirmation'
 import { Route as AdminCategoriesRouteImport } from './routes/admin.categories'
 import { Route as AdminProductsProductIdRouteImport } from './routes/admin.products.$productId'
@@ -74,6 +75,11 @@ const AdminDepotsRoute = AdminDepotsRouteImport.update({
   path: '/depots',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminCustomersRoute = AdminCustomersRouteImport.update({
+  id: '/customers',
+  path: '/customers',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminConfirmationRoute = AdminConfirmationRouteImport.update({
   id: '/confirmation',
   path: '/confirmation',
@@ -102,6 +108,7 @@ export interface FileRoutesByFullPath {
   '/auth': typeof AuthRoute
   '/admin/categories': typeof AdminCategoriesRoute
   '/admin/confirmation': typeof AdminConfirmationRoute
+  '/admin/customers': typeof AdminCustomersRoute
   '/admin/depots': typeof AdminDepotsRoute
   '/admin/inventory': typeof AdminInventoryRoute
   '/admin/locations': typeof AdminLocationsRoute
@@ -117,6 +124,7 @@ export interface FileRoutesByTo {
   '/auth': typeof AuthRoute
   '/admin/categories': typeof AdminCategoriesRoute
   '/admin/confirmation': typeof AdminConfirmationRoute
+  '/admin/customers': typeof AdminCustomersRoute
   '/admin/depots': typeof AdminDepotsRoute
   '/admin/inventory': typeof AdminInventoryRoute
   '/admin/locations': typeof AdminLocationsRoute
@@ -134,6 +142,7 @@ export interface FileRoutesById {
   '/auth': typeof AuthRoute
   '/admin/categories': typeof AdminCategoriesRoute
   '/admin/confirmation': typeof AdminConfirmationRoute
+  '/admin/customers': typeof AdminCustomersRoute
   '/admin/depots': typeof AdminDepotsRoute
   '/admin/inventory': typeof AdminInventoryRoute
   '/admin/locations': typeof AdminLocationsRoute
@@ -152,6 +161,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/admin/categories'
     | '/admin/confirmation'
+    | '/admin/customers'
     | '/admin/depots'
     | '/admin/inventory'
     | '/admin/locations'
@@ -167,6 +177,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/admin/categories'
     | '/admin/confirmation'
+    | '/admin/customers'
     | '/admin/depots'
     | '/admin/inventory'
     | '/admin/locations'
@@ -183,6 +194,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/admin/categories'
     | '/admin/confirmation'
+    | '/admin/customers'
     | '/admin/depots'
     | '/admin/inventory'
     | '/admin/locations'
@@ -272,6 +284,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminDepotsRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/customers': {
+      id: '/admin/customers'
+      path: '/customers'
+      fullPath: '/admin/customers'
+      preLoaderRoute: typeof AdminCustomersRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/confirmation': {
       id: '/admin/confirmation'
       path: '/confirmation'
@@ -330,6 +349,7 @@ const AdminProductsRouteWithChildren = AdminProductsRoute._addFileChildren(
 interface AdminRouteChildren {
   AdminCategoriesRoute: typeof AdminCategoriesRoute
   AdminConfirmationRoute: typeof AdminConfirmationRoute
+  AdminCustomersRoute: typeof AdminCustomersRoute
   AdminDepotsRoute: typeof AdminDepotsRoute
   AdminInventoryRoute: typeof AdminInventoryRoute
   AdminLocationsRoute: typeof AdminLocationsRoute
@@ -341,6 +361,7 @@ interface AdminRouteChildren {
 const AdminRouteChildren: AdminRouteChildren = {
   AdminCategoriesRoute: AdminCategoriesRoute,
   AdminConfirmationRoute: AdminConfirmationRoute,
+  AdminCustomersRoute: AdminCustomersRoute,
   AdminDepotsRoute: AdminDepotsRoute,
   AdminInventoryRoute: AdminInventoryRoute,
   AdminLocationsRoute: AdminLocationsRoute,
