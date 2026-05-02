@@ -18,6 +18,7 @@ export type Database = {
         Row: {
           cost_per_unit: number | null
           created_at: string
+          depot_id: string | null
           expires_at: string | null
           id: string
           location_id: string
@@ -32,6 +33,7 @@ export type Database = {
         Insert: {
           cost_per_unit?: number | null
           created_at?: string
+          depot_id?: string | null
           expires_at?: string | null
           id?: string
           location_id: string
@@ -46,6 +48,7 @@ export type Database = {
         Update: {
           cost_per_unit?: number | null
           created_at?: string
+          depot_id?: string | null
           expires_at?: string | null
           id?: string
           location_id?: string
@@ -58,6 +61,13 @@ export type Database = {
           variant_id?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "batches_depot_id_fkey"
+            columns: ["depot_id"]
+            isOneToOne: false
+            referencedRelation: "depots"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "batches_location_id_fkey"
             columns: ["location_id"]
@@ -319,6 +329,7 @@ export type Database = {
           blocked_reason: string | null
           cancelled_orders: number
           created_at: string
+          customer_type: Database["public"]["Enums"]["customer_type"]
           email: string | null
           full_name: string
           id: string
@@ -341,6 +352,7 @@ export type Database = {
           blocked_reason?: string | null
           cancelled_orders?: number
           created_at?: string
+          customer_type?: Database["public"]["Enums"]["customer_type"]
           email?: string | null
           full_name: string
           id?: string
@@ -363,6 +375,7 @@ export type Database = {
           blocked_reason?: string | null
           cancelled_orders?: number
           created_at?: string
+          customer_type?: Database["public"]["Enums"]["customer_type"]
           email?: string | null
           full_name?: string
           id?: string
@@ -380,6 +393,71 @@ export type Database = {
           user_id?: string | null
         }
         Relationships: []
+      }
+      depots: {
+        Row: {
+          address_line1: string | null
+          address_line2: string | null
+          city: string | null
+          code: string
+          contact_person: string | null
+          created_at: string
+          email: string | null
+          id: string
+          linked_location_id: string | null
+          name: string
+          notes: string | null
+          phone: string | null
+          region: string | null
+          status: Database["public"]["Enums"]["depot_status"]
+          type: Database["public"]["Enums"]["depot_type"]
+          updated_at: string
+        }
+        Insert: {
+          address_line1?: string | null
+          address_line2?: string | null
+          city?: string | null
+          code: string
+          contact_person?: string | null
+          created_at?: string
+          email?: string | null
+          id?: string
+          linked_location_id?: string | null
+          name: string
+          notes?: string | null
+          phone?: string | null
+          region?: string | null
+          status?: Database["public"]["Enums"]["depot_status"]
+          type?: Database["public"]["Enums"]["depot_type"]
+          updated_at?: string
+        }
+        Update: {
+          address_line1?: string | null
+          address_line2?: string | null
+          city?: string | null
+          code?: string
+          contact_person?: string | null
+          created_at?: string
+          email?: string | null
+          id?: string
+          linked_location_id?: string | null
+          name?: string
+          notes?: string | null
+          phone?: string | null
+          region?: string | null
+          status?: Database["public"]["Enums"]["depot_status"]
+          type?: Database["public"]["Enums"]["depot_type"]
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "depots_linked_location_id_fkey"
+            columns: ["linked_location_id"]
+            isOneToOne: false
+            referencedRelation: "locations"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       inventory: {
         Row: {
@@ -440,6 +518,7 @@ export type Database = {
           reason: string | null
           reference_id: string | null
           reference_type: string | null
+          source_depot_id: string | null
           type: Database["public"]["Enums"]["movement_type"]
           variant_id: string
         }
@@ -453,6 +532,7 @@ export type Database = {
           reason?: string | null
           reference_id?: string | null
           reference_type?: string | null
+          source_depot_id?: string | null
           type: Database["public"]["Enums"]["movement_type"]
           variant_id: string
         }
@@ -466,6 +546,7 @@ export type Database = {
           reason?: string | null
           reference_id?: string | null
           reference_type?: string | null
+          source_depot_id?: string | null
           type?: Database["public"]["Enums"]["movement_type"]
           variant_id?: string
         }
@@ -475,6 +556,13 @@ export type Database = {
             columns: ["location_id"]
             isOneToOne: false
             referencedRelation: "locations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "inventory_movements_source_depot_id_fkey"
+            columns: ["source_depot_id"]
+            isOneToOne: false
+            referencedRelation: "depots"
             referencedColumns: ["id"]
           },
           {
@@ -653,6 +741,8 @@ export type Database = {
       }
       orders: {
         Row: {
+          ai_confidence_score: number | null
+          ai_extracted_data: Json | null
           assigned_agent_id: string | null
           cancelled_at: string | null
           channel: Database["public"]["Enums"]["order_channel"]
@@ -667,8 +757,10 @@ export type Database = {
           grand_total: number
           id: string
           internal_notes: string | null
+          needs_human_review: boolean
           notes: string | null
           order_number: string
+          original_message_text: string | null
           payment_method: Database["public"]["Enums"]["payment_method"]
           payment_status: Database["public"]["Enums"]["payment_status"]
           placed_at: string
@@ -683,12 +775,15 @@ export type Database = {
           shipping_region: string | null
           shipping_total: number
           source_location_id: string | null
+          source_reference: string | null
           status: Database["public"]["Enums"]["order_status"]
           subtotal: number
           tax_total: number
           updated_at: string
         }
         Insert: {
+          ai_confidence_score?: number | null
+          ai_extracted_data?: Json | null
           assigned_agent_id?: string | null
           cancelled_at?: string | null
           channel?: Database["public"]["Enums"]["order_channel"]
@@ -703,8 +798,10 @@ export type Database = {
           grand_total?: number
           id?: string
           internal_notes?: string | null
+          needs_human_review?: boolean
           notes?: string | null
           order_number?: string
+          original_message_text?: string | null
           payment_method?: Database["public"]["Enums"]["payment_method"]
           payment_status?: Database["public"]["Enums"]["payment_status"]
           placed_at?: string
@@ -719,12 +816,15 @@ export type Database = {
           shipping_region?: string | null
           shipping_total?: number
           source_location_id?: string | null
+          source_reference?: string | null
           status?: Database["public"]["Enums"]["order_status"]
           subtotal?: number
           tax_total?: number
           updated_at?: string
         }
         Update: {
+          ai_confidence_score?: number | null
+          ai_extracted_data?: Json | null
           assigned_agent_id?: string | null
           cancelled_at?: string | null
           channel?: Database["public"]["Enums"]["order_channel"]
@@ -739,8 +839,10 @@ export type Database = {
           grand_total?: number
           id?: string
           internal_notes?: string | null
+          needs_human_review?: boolean
           notes?: string | null
           order_number?: string
+          original_message_text?: string | null
           payment_method?: Database["public"]["Enums"]["payment_method"]
           payment_status?: Database["public"]["Enums"]["payment_status"]
           placed_at?: string
@@ -755,6 +857,7 @@ export type Database = {
           shipping_region?: string | null
           shipping_total?: number
           source_location_id?: string | null
+          source_reference?: string | null
           status?: Database["public"]["Enums"]["order_status"]
           subtotal?: number
           tax_total?: number
@@ -841,6 +944,77 @@ export type Database = {
             columns: ["product_id"]
             isOneToOne: false
             referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      product_origin_history: {
+        Row: {
+          batch_id: string | null
+          created_at: string
+          created_by: string | null
+          depot_id: string
+          id: string
+          notes: string | null
+          product_id: string
+          quantity: number
+          received_at: string
+          unit_cost: number | null
+          variant_id: string | null
+        }
+        Insert: {
+          batch_id?: string | null
+          created_at?: string
+          created_by?: string | null
+          depot_id: string
+          id?: string
+          notes?: string | null
+          product_id: string
+          quantity: number
+          received_at?: string
+          unit_cost?: number | null
+          variant_id?: string | null
+        }
+        Update: {
+          batch_id?: string | null
+          created_at?: string
+          created_by?: string | null
+          depot_id?: string
+          id?: string
+          notes?: string | null
+          product_id?: string
+          quantity?: number
+          received_at?: string
+          unit_cost?: number | null
+          variant_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "product_origin_history_batch_id_fkey"
+            columns: ["batch_id"]
+            isOneToOne: false
+            referencedRelation: "batches"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "product_origin_history_depot_id_fkey"
+            columns: ["depot_id"]
+            isOneToOne: false
+            referencedRelation: "depots"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "product_origin_history_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "product_origin_history_variant_id_fkey"
+            columns: ["variant_id"]
+            isOneToOne: false
+            referencedRelation: "product_variants"
             referencedColumns: ["id"]
           },
         ]
@@ -1128,6 +1302,15 @@ export type Database = {
         | "wholesale"
         | "at_risk"
         | "blocked"
+      customer_type: "retail" | "wholesale" | "franchise"
+      depot_status: "active" | "inactive" | "archived"
+      depot_type:
+        | "supplier"
+        | "cooperative"
+        | "producer"
+        | "internal_warehouse"
+        | "franchise"
+        | "shop"
       locale_code: "fr" | "ar" | "en"
       location_type: "warehouse" | "shop" | "franchise" | "virtual"
       movement_type:
@@ -1148,6 +1331,8 @@ export type Database = {
         | "wholesale"
         | "franchise"
         | "manual"
+        | "walk_in"
+        | "whatsapp_ai"
       order_status:
         | "draft"
         | "pending"
@@ -1338,6 +1523,16 @@ export const Constants = {
         "at_risk",
         "blocked",
       ],
+      customer_type: ["retail", "wholesale", "franchise"],
+      depot_status: ["active", "inactive", "archived"],
+      depot_type: [
+        "supplier",
+        "cooperative",
+        "producer",
+        "internal_warehouse",
+        "franchise",
+        "shop",
+      ],
       locale_code: ["fr", "ar", "en"],
       location_type: ["warehouse", "shop", "franchise", "virtual"],
       movement_type: [
@@ -1359,6 +1554,8 @@ export const Constants = {
         "wholesale",
         "franchise",
         "manual",
+        "walk_in",
+        "whatsapp_ai",
       ],
       order_status: [
         "draft",
