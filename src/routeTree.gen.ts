@@ -16,7 +16,9 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
 import { Route as AdminProductsRouteImport } from './routes/admin.products'
 import { Route as AdminOrdersRouteImport } from './routes/admin.orders'
+import { Route as AdminDepotsRouteImport } from './routes/admin.depots'
 import { Route as AdminConfirmationRouteImport } from './routes/admin.confirmation'
+import { Route as AdminCategoriesRouteImport } from './routes/admin.categories'
 import { Route as AdminOrdersOrderIdRouteImport } from './routes/admin.orders.$orderId'
 
 const AuthRoute = AuthRouteImport.update({
@@ -54,9 +56,19 @@ const AdminOrdersRoute = AdminOrdersRouteImport.update({
   path: '/orders',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminDepotsRoute = AdminDepotsRouteImport.update({
+  id: '/depots',
+  path: '/depots',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminConfirmationRoute = AdminConfirmationRouteImport.update({
   id: '/confirmation',
   path: '/confirmation',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminCategoriesRoute = AdminCategoriesRouteImport.update({
+  id: '/categories',
+  path: '/categories',
   getParentRoute: () => AdminRoute,
 } as any)
 const AdminOrdersOrderIdRoute = AdminOrdersOrderIdRouteImport.update({
@@ -70,7 +82,9 @@ export interface FileRoutesByFullPath {
   '/account': typeof AccountRoute
   '/admin': typeof AdminRouteWithChildren
   '/auth': typeof AuthRoute
+  '/admin/categories': typeof AdminCategoriesRoute
   '/admin/confirmation': typeof AdminConfirmationRoute
+  '/admin/depots': typeof AdminDepotsRoute
   '/admin/orders': typeof AdminOrdersRouteWithChildren
   '/admin/products': typeof AdminProductsRoute
   '/admin/': typeof AdminIndexRoute
@@ -80,7 +94,9 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/account': typeof AccountRoute
   '/auth': typeof AuthRoute
+  '/admin/categories': typeof AdminCategoriesRoute
   '/admin/confirmation': typeof AdminConfirmationRoute
+  '/admin/depots': typeof AdminDepotsRoute
   '/admin/orders': typeof AdminOrdersRouteWithChildren
   '/admin/products': typeof AdminProductsRoute
   '/admin': typeof AdminIndexRoute
@@ -92,7 +108,9 @@ export interface FileRoutesById {
   '/account': typeof AccountRoute
   '/admin': typeof AdminRouteWithChildren
   '/auth': typeof AuthRoute
+  '/admin/categories': typeof AdminCategoriesRoute
   '/admin/confirmation': typeof AdminConfirmationRoute
+  '/admin/depots': typeof AdminDepotsRoute
   '/admin/orders': typeof AdminOrdersRouteWithChildren
   '/admin/products': typeof AdminProductsRoute
   '/admin/': typeof AdminIndexRoute
@@ -105,7 +123,9 @@ export interface FileRouteTypes {
     | '/account'
     | '/admin'
     | '/auth'
+    | '/admin/categories'
     | '/admin/confirmation'
+    | '/admin/depots'
     | '/admin/orders'
     | '/admin/products'
     | '/admin/'
@@ -115,7 +135,9 @@ export interface FileRouteTypes {
     | '/'
     | '/account'
     | '/auth'
+    | '/admin/categories'
     | '/admin/confirmation'
+    | '/admin/depots'
     | '/admin/orders'
     | '/admin/products'
     | '/admin'
@@ -126,7 +148,9 @@ export interface FileRouteTypes {
     | '/account'
     | '/admin'
     | '/auth'
+    | '/admin/categories'
     | '/admin/confirmation'
+    | '/admin/depots'
     | '/admin/orders'
     | '/admin/products'
     | '/admin/'
@@ -191,11 +215,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminOrdersRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/depots': {
+      id: '/admin/depots'
+      path: '/depots'
+      fullPath: '/admin/depots'
+      preLoaderRoute: typeof AdminDepotsRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/confirmation': {
       id: '/admin/confirmation'
       path: '/confirmation'
       fullPath: '/admin/confirmation'
       preLoaderRoute: typeof AdminConfirmationRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/categories': {
+      id: '/admin/categories'
+      path: '/categories'
+      fullPath: '/admin/categories'
+      preLoaderRoute: typeof AdminCategoriesRouteImport
       parentRoute: typeof AdminRoute
     }
     '/admin/orders/$orderId': {
@@ -221,14 +259,18 @@ const AdminOrdersRouteWithChildren = AdminOrdersRoute._addFileChildren(
 )
 
 interface AdminRouteChildren {
+  AdminCategoriesRoute: typeof AdminCategoriesRoute
   AdminConfirmationRoute: typeof AdminConfirmationRoute
+  AdminDepotsRoute: typeof AdminDepotsRoute
   AdminOrdersRoute: typeof AdminOrdersRouteWithChildren
   AdminProductsRoute: typeof AdminProductsRoute
   AdminIndexRoute: typeof AdminIndexRoute
 }
 
 const AdminRouteChildren: AdminRouteChildren = {
+  AdminCategoriesRoute: AdminCategoriesRoute,
   AdminConfirmationRoute: AdminConfirmationRoute,
+  AdminDepotsRoute: AdminDepotsRoute,
   AdminOrdersRoute: AdminOrdersRouteWithChildren,
   AdminProductsRoute: AdminProductsRoute,
   AdminIndexRoute: AdminIndexRoute,
