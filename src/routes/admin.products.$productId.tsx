@@ -15,6 +15,7 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { ArrowLeft, Plus, Trash2 } from "lucide-react";
+import { ProductImageUploader } from "@/components/admin/ProductImageUploader";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/admin/products/$productId")({ component: ProductDetail });
@@ -101,7 +102,7 @@ function ProductDetail() {
 
         <TabsContent value="translations"><TranslationsTab productId={productId} translations={trans.data ?? []} /></TabsContent>
         <TabsContent value="variants"><VariantsTab productId={productId} variants={variants.data ?? []} basePrice={form.base_price} /></TabsContent>
-        <TabsContent value="images"><ImagesTab productId={productId} images={images.data ?? []} /></TabsContent>
+        <TabsContent value="images"><ProductImageUploader productId={productId} images={images.data ?? []} /></TabsContent>
       </Tabs>
     </div>
   );
