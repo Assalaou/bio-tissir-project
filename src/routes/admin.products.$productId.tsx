@@ -13,7 +13,6 @@ import { Switch } from "@/components/ui/switch";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Badge } from "@/components/ui/badge";
 import { ArrowLeft, Plus, Trash2 } from "lucide-react";
 import { ProductImageUploader } from "@/components/admin/ProductImageUploader";
 import { toast } from "sonner";
