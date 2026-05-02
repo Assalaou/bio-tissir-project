@@ -11,8 +11,9 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { ArrowLeft, Plus, Trash2 } from "lucide-react";
+import { ArrowLeft, Trash2 } from "lucide-react";
 import { toast } from "sonner";
+import { ProductPicker, PickedItem } from "@/components/admin/ProductPicker";
 
 export const Route = createFileRoute("/admin/orders/new")({ component: ManualOrderCapture });
 
@@ -22,6 +23,8 @@ interface LineItem {
   variant_id: string;
   sku: string;
   product_name: string;
+  variant_label: string | null;
+  image_url: string | null;
   unit_price: number;
   quantity: number;
 }
@@ -50,29 +53,21 @@ function ManualOrderCapture() {
       return (await q).data ?? [];
     },
   });
-
-  const variants = useQuery({
-    queryKey: ["variant-pick"],
-    queryFn: async () => {
-      const { data: v } = await supabase.from("product_variants").select("id, sku, price, product_id").eq("active", true);
-      const { data: p } = await supabase.from("products").select("id, base_price");
-      const ids = (v ?? []).map((x) => x.product_id);
-      const { data: tr } = ids.length ? await supabase.from("product_translations").select("product_id, locale, name").in("product_id", ids).eq("locale", "fr") : { data: [] };
-      return (v ?? []).map((vv: any) => ({
-        ...vv,
-        product_name: tr?.find((x: any) => x.product_id === vv.product_id)?.name ?? vv.sku,
-        effective_price: vv.price ?? p?.find((x: any) => x.id === vv.product_id)?.base_price ?? 0,
-      }));
-    },
-  });
+  const selectedCustomer = useMemo(
+    () => customers.data?.find((c) => c.id === customerId),
+    [customers.data, customerId]
+  );
+  const customerType = creatingNew ? newCustomer.customer_type : selectedCustomer?.customer_type;
 
   const subtotal = useMemo(() => items.reduce((s, i) => s + i.unit_price * i.quantity, 0), [items]);
   const grandTotal = subtotal + shippingTotal - discountTotal;
 
-  const addItem = (variantId: string) => {
-    const v = variants.data?.find((x: any) => x.id === variantId);
-    if (!v) return;
-    setItems((s) => [...s, { variant_id: v.id, sku: v.sku, product_name: v.product_name, unit_price: Number(v.effective_price), quantity: 1 }]);
+  const addItem = (p: PickedItem) => {
+    setItems((s) => {
+      const idx = s.findIndex((x) => x.variant_id === p.variant_id);
+      if (idx >= 0) return s.map((x, j) => j === idx ? { ...x, quantity: x.quantity + 1 } : x);
+      return [...s, { variant_id: p.variant_id, sku: p.sku, product_name: p.product_name, variant_label: p.variant_label, image_url: p.image_url, unit_price: p.unit_price, quantity: 1 }];
+    });
   };
 
   const submit = useMutation({
@@ -112,6 +107,7 @@ function ManualOrderCapture() {
 
       const itemsPayload = items.map((i) => ({
         order_id: order!.id, variant_id: i.variant_id, sku: i.sku, product_name: i.product_name,
+        variant_label: i.variant_label,
         unit_price: i.unit_price, quantity: i.quantity, line_total: i.unit_price * i.quantity,
       }));
       const { error: ierr } = await supabase.from("order_items").insert(itemsPayload as any);
@@ -185,17 +181,21 @@ function ManualOrderCapture() {
           <Card>
             <CardHeader><CardTitle className="text-base">{t("newOrder.products")}</CardTitle></CardHeader>
             <CardContent>
-              <Select onValueChange={addItem}>
-                <SelectTrigger><SelectValue placeholder={t("newOrder.addProduct")} /></SelectTrigger>
-                <SelectContent>{variants.data?.map((v: any) => <SelectItem key={v.id} value={v.id}>{v.product_name} · {v.sku}</SelectItem>)}</SelectContent>
-              </Select>
+              <ProductPicker customerType={customerType} onPick={addItem} />
               <Table className="mt-3">
-                <TableHeader><TableRow><TableHead>SKU</TableHead><TableHead>{t("common.name")}</TableHead><TableHead>{t("common.price")}</TableHead><TableHead>{t("common.quantity")}</TableHead><TableHead className="text-right">{t("common.total")}</TableHead><TableHead></TableHead></TableRow></TableHeader>
+                <TableHeader><TableRow><TableHead className="w-12"></TableHead><TableHead>{t("common.name")}</TableHead><TableHead>{t("common.price")}</TableHead><TableHead>{t("common.quantity")}</TableHead><TableHead className="text-right">{t("common.total")}</TableHead><TableHead></TableHead></TableRow></TableHeader>
                 <TableBody>
                   {items.map((i, idx) => (
                     <TableRow key={idx}>
-                      <TableCell className="font-mono text-xs">{i.sku}</TableCell>
-                      <TableCell>{i.product_name}</TableCell>
+                      <TableCell>
+                        <div className="h-10 w-10 overflow-hidden rounded bg-muted">
+                          {i.image_url ? <img src={i.image_url} alt="" className="h-full w-full object-cover" /> : null}
+                        </div>
+                      </TableCell>
+                      <TableCell>
+                        <div className="font-medium">{i.product_name}</div>
+                        <div className="text-xs text-muted-foreground font-mono">{i.sku}{i.variant_label ? ` · ${i.variant_label}` : ""}</div>
+                      </TableCell>
                       <TableCell><Input type="number" step="0.01" value={i.unit_price} onChange={(e) => setItems((s) => s.map((x, j) => j === idx ? { ...x, unit_price: Number(e.target.value) } : x))} className="w-24" /></TableCell>
                       <TableCell><Input type="number" min={1} value={i.quantity} onChange={(e) => setItems((s) => s.map((x, j) => j === idx ? { ...x, quantity: Number(e.target.value) } : x))} className="w-20" /></TableCell>
                       <TableCell className="text-right font-mono">{(i.unit_price * i.quantity).toFixed(2)}</TableCell>

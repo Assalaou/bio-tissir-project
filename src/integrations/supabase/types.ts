@@ -913,29 +913,41 @@ export type Database = {
       product_images: {
         Row: {
           alt_text: string | null
+          alt_text_ar: string | null
+          alt_text_en: string | null
+          alt_text_fr: string | null
           created_at: string
           id: string
           is_primary: boolean
           product_id: string
           sort_order: number
+          storage_path: string | null
           url: string
         }
         Insert: {
           alt_text?: string | null
+          alt_text_ar?: string | null
+          alt_text_en?: string | null
+          alt_text_fr?: string | null
           created_at?: string
           id?: string
           is_primary?: boolean
           product_id: string
           sort_order?: number
+          storage_path?: string | null
           url: string
         }
         Update: {
           alt_text?: string | null
+          alt_text_ar?: string | null
+          alt_text_en?: string | null
+          alt_text_fr?: string | null
           created_at?: string
           id?: string
           is_primary?: boolean
           product_id?: string
           sort_order?: number
+          storage_path?: string | null
           url?: string
         }
         Relationships: [
@@ -1256,6 +1268,8 @@ export type Database = {
         Returns: boolean
       }
       is_staff: { Args: { _user_id: string }; Returns: boolean }
+      show_limit: { Args: never; Returns: number }
+      show_trgm: { Args: { "": string }; Returns: string[] }
     }
     Enums: {
       acquisition_channel:
