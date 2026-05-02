@@ -17,6 +17,8 @@ import {
   Bell,
   LogOut,
   Menu,
+  Factory,
+  PlusCircle,
 } from "lucide-react";
 import { useAuth, AppRole } from "@/lib/auth";
 import { useI18n, Locale } from "@/lib/i18n";
@@ -44,9 +46,10 @@ const NAV: NavItem[] = [
   { to: "/admin", labelKey: "nav.dashboard", icon: LayoutDashboard, group: "main" },
   { to: "/admin/products", labelKey: "nav.products", icon: Package, group: "catalog", roles: ["super_admin", "commercial_admin", "stock_manager"] },
   { to: "/admin/categories", labelKey: "nav.categories", icon: Tags, group: "catalog", roles: ["super_admin", "commercial_admin"] },
-  { to: "/admin/variants", labelKey: "nav.variants", icon: Layers, group: "catalog", roles: ["super_admin", "commercial_admin", "stock_manager"] },
   { to: "/admin/inventory", labelKey: "nav.inventory", icon: Boxes, group: "stock", roles: ["super_admin", "stock_manager", "logistics"] },
   { to: "/admin/locations", labelKey: "nav.locations", icon: Warehouse, group: "stock", roles: ["super_admin", "stock_manager"] },
+  { to: "/admin/depots", labelKey: "nav.depots", icon: Factory, group: "stock", roles: ["super_admin", "stock_manager", "commercial_admin"] },
+  { to: "/admin/orders/new", labelKey: "nav.newOrder", icon: PlusCircle, group: "sales", roles: ["super_admin", "commercial_admin", "confirmation_agent"] },
   { to: "/admin/orders", labelKey: "nav.orders", icon: ShoppingCart, group: "sales", roles: ["super_admin", "commercial_admin", "confirmation_agent", "logistics", "accountant"] },
   { to: "/admin/confirmation", labelKey: "nav.confirmation", icon: PhoneCall, group: "sales", roles: ["super_admin", "commercial_admin", "confirmation_agent"] },
   { to: "/admin/customers", labelKey: "nav.customers", icon: Users, group: "sales", roles: ["super_admin", "commercial_admin", "confirmation_agent"] },
