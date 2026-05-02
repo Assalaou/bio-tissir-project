@@ -4,16 +4,11 @@ import {
   LayoutDashboard,
   Package,
   Tags,
-  Layers,
   Boxes,
   Warehouse,
   ShoppingCart,
   PhoneCall,
   Users,
-  FileText,
-  Truck,
-  Building2,
-  Settings,
   Bell,
   LogOut,
   Menu,
@@ -53,10 +48,6 @@ const NAV: NavItem[] = [
   { to: "/admin/orders", labelKey: "nav.orders", icon: ShoppingCart, group: "sales", roles: ["super_admin", "commercial_admin", "confirmation_agent", "logistics", "accountant"] },
   { to: "/admin/confirmation", labelKey: "nav.confirmation", icon: PhoneCall, group: "sales", roles: ["super_admin", "commercial_admin", "confirmation_agent"] },
   { to: "/admin/customers", labelKey: "nav.customers", icon: Users, group: "sales", roles: ["super_admin", "commercial_admin", "confirmation_agent"] },
-  { to: "/admin/invoices", labelKey: "nav.invoices", icon: FileText, group: "sales", roles: ["super_admin", "accountant", "commercial_admin"] },
-  { to: "/admin/deliveries", labelKey: "nav.deliveries", icon: Truck, group: "sales", roles: ["super_admin", "logistics", "commercial_admin"] },
-  { to: "/admin/franchises", labelKey: "nav.franchises", icon: Building2, group: "admin", roles: ["super_admin", "franchise_manager"] },
-  { to: "/admin/settings", labelKey: "nav.settings", icon: Settings, group: "admin", roles: ["super_admin"] },
 ];
 
 const GROUPS: { id: NavItem["group"]; labelKey: string }[] = [
