@@ -119,7 +119,7 @@ function CustomerDetail() {
               {addresses.data?.length === 0 && <div className="text-muted-foreground">{t("common.empty")}</div>}
               {addresses.data?.map((a: any) => (
                 <div key={a.id} className="rounded border p-2">
-                  <div className="font-medium">{a.full_name ?? cust.data.full_name}</div>
+                  <div className="font-medium">{a.full_name ?? form.full_name}</div>
                   <div>{a.address_line1}</div>
                   <div>{a.city} {a.postal_code}</div>
                   <div className="text-xs text-muted-foreground">{a.region} · {a.country}</div>
